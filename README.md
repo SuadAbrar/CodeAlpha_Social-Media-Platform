@@ -85,8 +85,8 @@ A full-stack mini social media application built using the MERN stack. This proj
 ### 1. Clone the repository
 
 ```bash
-git clone https://github.com/your-username/social-media-app.git
-cd social-media-app
+git clone https://github.com/SuadAbrar/Social-Media-Platform.git
+cd Social-Media-Platform
 ```
 
 ### 2. Setup Backend
@@ -117,7 +117,7 @@ npm run dev
 ```bash
 cd client
 npm install
-npm start
+npm run dev
 ```
 
 ---
