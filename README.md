@@ -181,9 +181,3 @@ This project is part of an internship task. Contributions are welcome for learni
 This project is for educational purposes.
 
 ---
-
-## 👨‍💻 Author
-
-Developed by [Your Name]
-
----
