@@ -16,7 +16,7 @@ app.use(express.json());
 
 // Routes
 app.get("/", (req, res) => {
-  res.send("E-Commerce API is running...");
+  res.send("social media platform is running...");
 });
 
 const PORT = process.env.PORT || 5000;
