@@ -160,3 +160,25 @@ export const getFollowing = async (req, res) => {
     res.status(500).json({ message: "Server error" });
   }
 };
+
+// Search users by username
+export const searchUsers = async (req, res) => {
+  try {
+    const { query } = req.query;
+    if (!query) {
+      return res.status(400).json({ message: "Query parameter is required" });
+    }
+
+    const users = await User.find({
+      username: { $regex: query, $options: "i" },
+    }).select("username profilePicture");
+
+    res.status(200).json({
+      success: true,
+      data: users,
+    });
+  } catch (error) {
+    console.error("Error searching users:", error);
+    res.status(500).json({ message: "Server error" });
+  }
+};
