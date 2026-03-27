@@ -59,16 +59,11 @@ userSchema.path("password").validate(function (value) {
 }, "Password must contain at least one uppercase letter, one lowercase letter, one number, and one special character");
 
 // Pre-save hook to hash password
-userSchema.pre("save", async function (next) {
-  if (!this.isModified("password")) return next();
+userSchema.pre("save", async function () {
+  if (!this.isModified("password")) return;
 
-  try {
-    const salt = await bcrypt.genSalt(14); // Increased salt rounds for better security
-    this.password = await bcrypt.hash(this.password, salt);
-    next();
-  } catch (error) {
-    next(error);
-  }
+  const salt = await bcrypt.genSalt(14); // Increased salt rounds for better security
+  this.password = await bcrypt.hash(this.password, salt);
 });
 
 // Instance method to compare passwords
