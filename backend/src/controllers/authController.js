@@ -94,3 +94,14 @@ export const loginUser = async (req, res) => {
     res.status(500).json({ message: error.message });
   }
 };
+
+// logout user
+// @desc    Invalidate user session client side
+// @route   POST /api/auth/logout
+// @access  Public
+export const logoutUser = (req, res) => {
+  // With stateless JWT, logout is handled by client token removal.
+  return res
+    .status(200)
+    .json({ success: true, message: "Logged out successfully" });
+};
