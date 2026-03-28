@@ -3,15 +3,18 @@ import generateToken from "../utils/generateToken.js";
 import bcrypt from "bcryptjs";
 
 // @desc    Register a new user
-// @route   POST /api/users/register
+// @route   POST /api/auth/register
 // @access  Public
 export const registerUser = async (req, res) => {
   try {
-    const { username, email, password } = req.body;
+    let { username, email, password } = req.body;
 
     if (!username || !email || !password) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
+
+    username = username.trim();
+    email = email.trim().toLowerCase();
 
     const userExists = await User.findOne({ email });
 
@@ -36,6 +39,11 @@ export const registerUser = async (req, res) => {
       },
     });
   } catch (error) {
+    // Handle duplicate key errors gracefully
+    if (error.code === 11000) {
+      return res.status(400).json({ message: "User already exists" });
+    }
+
     // Handle validation errors specifically
     if (error.name === "ValidationError") {
       const messages = Object.values(error.errors).map((err) => err.message);
@@ -47,16 +55,18 @@ export const registerUser = async (req, res) => {
 
 // login user
 // @desc    Authenticate user & get token
-// @route   POST /api/users/login
+// @route   POST /api/auth/login
 // @access  Public
 
 export const loginUser = async (req, res) => {
   try {
-    const { email, password } = req.body;
+    let { email, password } = req.body;
 
     if (!email || !password) {
       return res.status(400).json({ message: "Please fill in all fields" });
     }
+
+    email = email.trim().toLowerCase();
 
     const user = await User.findOne({ email }).select("+password");
 
