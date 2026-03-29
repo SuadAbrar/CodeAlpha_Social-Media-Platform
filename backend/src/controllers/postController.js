@@ -115,7 +115,16 @@ export const getFeedPosts = async (req, res) => {
         .populate("user", "username profilePicture"),
     ]);
 
-    return sendSuccess(res, posts, "Feed posts retrieved", {
+    const postsWithLikeStatus = posts.map((post) => {
+      const isLiked = posts.likes.includes(req.user._id);
+      return {
+        ...post.toObject(),
+        likesCount: post.likes.length,
+        isLiked,
+      };
+    });
+
+    return sendSuccess(res, postsWithLikeStatus, "Feed posts retrieved", {
       page,
       limit,
       total,
@@ -194,6 +203,43 @@ export const updatePost = async (req, res) => {
   } catch (error) {
     console.error("Error updating post:", error);
     return sendError(res, 500, "Server error while updating post");
+  }
+};
+
+// toggle like/unlike a post
+// @desc    Toggle like/unlike a post
+// @route   POST /api/posts/:postId/like
+// @access  Private
+export const toggleLikePost = async (req, res) => {
+  try {
+    const { postId } = req.params;
+    const userId = req.user._id;
+
+    const post = await Post.findById(postId);
+    if (!post) {
+      return sendError(res, 404, "Post not found");
+    }
+    const isLiked = post.likes.includes(userId);
+
+    if (isLiked) {
+      // Unlike the post
+      post.likes.pull(userId);
+    }
+    {
+      // Like the post
+      post.likes.addToSet(userId);
+    }
+
+    await post.save();
+
+    return sendSuccess(
+      res,
+      { postId: post._id, likesCount: post.likes.length, isLiked: !isLiked },
+      isLiked ? "Post unliked" : "Post liked",
+    );
+  } catch (error) {
+    console.error("Error toggling like on post:", error);
+    return sendError(res, 500, "Server error while toggling like on post");
   }
 };
 
