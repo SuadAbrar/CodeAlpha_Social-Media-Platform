@@ -47,7 +47,7 @@ const validatePostInput = ({ content, image }) => {
 };
 
 // @desc    Create a new post
-// @route   POST /api/posts
+// @route   POST /api/posts/
 // @access  Private
 export const createPost = async (req, res) => {
   try {
@@ -172,7 +172,7 @@ export const getUserPosts = async (req, res) => {
 };
 
 // @desc    Update a post
-// @route   PATCH /api/posts/:postId
+// @route   PUT /api/posts/:postId
 // @access  Private
 export const updatePost = async (req, res) => {
   try {
@@ -208,7 +208,7 @@ export const updatePost = async (req, res) => {
 
 // toggle like/unlike a post
 // @desc    Toggle like/unlike a post
-// @route   POST /api/posts/:postId/like
+// @route   POST /api/posts/like/:postId
 // @access  Private
 export const toggleLikePost = async (req, res) => {
   try {

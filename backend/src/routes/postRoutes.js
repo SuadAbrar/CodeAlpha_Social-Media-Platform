@@ -4,6 +4,7 @@ import {
   getFeedPosts,
   getPostById,
   updatePost,
+  getUserPosts,
   toggleLikePost,
   deletePost,
 } from "../controllers/postController.js";
@@ -15,6 +16,7 @@ router.post("/", authMiddleware, createPost);
 router.get("/feed", authMiddleware, getFeedPosts);
 router.get("/:postId", authMiddleware, getPostById);
 router.put("/:postId", authMiddleware, updatePost);
+router.get("/user/:userId", authMiddleware, getUserPosts);
 router.post("/like/:postId", authMiddleware, toggleLikePost);
 router.delete("/:postId", authMiddleware, deletePost);
 
