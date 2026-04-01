@@ -1,7 +1,7 @@
 import express from "express";
 import {
   createPost,
-  getPosts,
+  getFeedPosts,
   getPostById,
   updatePost,
   toggleLikePost,
@@ -12,8 +12,8 @@ import authMiddleware from "../middleware/authMiddleware.js";
 const router = express.Router();
 
 router.post("/", authMiddleware, createPost);
-router.get("/feed", authMiddleware, getPosts);
-router.get("/:postId", getPostById);
+router.get("/feed", authMiddleware, getFeedPosts);
+router.get("/:postId", authMiddleware, getPostById);
 router.put("/:postId", authMiddleware, updatePost);
 router.post("/like/:postId", authMiddleware, toggleLikePost);
 router.delete("/:postId", authMiddleware, deletePost);
