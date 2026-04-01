@@ -116,7 +116,7 @@ export const getFeedPosts = async (req, res) => {
     ]);
 
     const postsWithLikeStatus = posts.map((post) => {
-      const isLiked = posts.likes.includes(req.user._id);
+      const isLiked = post.likes.includes(req.user._id);
       return {
         ...post.toObject(),
         likesCount: post.likes.length,
@@ -224,8 +224,7 @@ export const toggleLikePost = async (req, res) => {
     if (isLiked) {
       // Unlike the post
       post.likes.pull(userId);
-    }
-    {
+    } else {
       // Like the post
       post.likes.addToSet(userId);
     }

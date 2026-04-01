@@ -7,7 +7,7 @@ import {
   toggleLikePost,
   deletePost,
 } from "../controllers/postController.js";
-import authMiddleware from "../middleware/authMiddleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 
 const router = express.Router();
 
