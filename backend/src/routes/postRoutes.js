@@ -14,9 +14,9 @@ const router = express.Router();
 
 router.post("/", authMiddleware, createPost);
 router.get("/feed", authMiddleware, getFeedPosts);
-router.get("/:postId", authMiddleware, getPostById);
+router.get("/:postId", getPostById);
 router.put("/:postId", authMiddleware, updatePost);
-router.get("/user/:userId", authMiddleware, getUserPosts);
+router.get("/user/:userId", getUserPosts);
 router.post("/like/:postId", authMiddleware, toggleLikePost);
 router.delete("/:postId", authMiddleware, deletePost);
 

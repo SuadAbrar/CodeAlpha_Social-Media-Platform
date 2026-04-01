@@ -90,7 +90,7 @@ export const deleteComment = async (req, res) => {
       return sendError(res, 403, "Unauthorized to delete this comment");
     }
 
-    await comment.remove();
+    await comment.deleteOne();
     return sendSuccess(res, null, "Comment deleted successfully");
   } catch (error) {
     console.error("Error deleting comment:", error);
