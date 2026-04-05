@@ -32,10 +32,10 @@ const Login = () => {
       const userData = await loginUser(form);
       login(userData);
       navigate("/");
-    } catch (submitError) {
-      console.error("Login failed:", submitError);
+    } catch (err) {
+      console.error("Login failed:", err);
       setError(
-        submitError.response?.data?.message ||
+        err.response?.data?.message ||
           "Login failed. Please check your credentials and try again.",
       );
     } finally {
@@ -79,7 +79,7 @@ const Login = () => {
                 value={form.email}
                 onChange={handleChange}
                 required
-                placeholder="emailAddress@gmail.com"
+                placeholder="Enter your email address"
                 className="w-full rounded-3xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-900 transition duration-300 placeholder:text-slate-400 focus:border-blue-400 focus:outline-none focus:ring-4 focus:ring-blue-100"
               />
             </label>
