@@ -44,8 +44,8 @@ const Login = () => {
   };
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top,rgba(59,130,246,0.15),transparent_30%),linear-gradient(135deg,#eef2ff,#ffffff)] px-4 py-10">
-      <div className="w-full max-w-lg rounded-3xl bg-white/95 border border-slate-200 shadow-[0_25px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm">
+    <div className="min-h-screen flex items-center justify-center bg-[radial-gradient(circle_at_top_left,rgba(56,189,248,0.18),transparent_25%),radial-gradient(circle_at_bottom_right,rgba(168,85,247,0.16),transparent_20%),linear-gradient(135deg,#f8fafc,#eef2ff)] px-4 py-10">
+      <div className="w-full max-w-lg rounded-3xl bg-white/95 border border-slate-200 shadow-[0_25px_80px_rgba(15,23,42,0.12)] backdrop-blur-sm transition duration-500 ease-out hover:-translate-y-1">
         <div className="p-8 sm:p-10">
           <div className="mb-8 text-center">
             {/* <div className="mx-auto mb-4 h-12 w-12 rounded-3xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-2xl shadow-sm">
@@ -100,6 +100,7 @@ const Login = () => {
                 />
                 <button
                   type="button"
+                  aria-label={showPassword ? "Hide password" : "Show password"}
                   onClick={() => setShowPassword((value) => !value)}
                   className="absolute inset-y-0 right-2 inline-flex items-center rounded-full px-3 text-slate-500 transition hover:bg-slate-100 hover:text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-300"
                 >
