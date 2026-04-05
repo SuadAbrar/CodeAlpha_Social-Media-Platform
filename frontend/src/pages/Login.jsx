@@ -51,7 +51,7 @@ const Login = () => {
             {/* <div className="mx-auto mb-4 h-12 w-12 rounded-3xl bg-blue-500/10 text-blue-600 flex items-center justify-center text-2xl shadow-sm">
               S
             </div> */}
-            <p className="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">
+            <p className="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">
               SocialApp
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
@@ -147,7 +147,7 @@ const Login = () => {
             Don't have an account?{" "}
             <Link
               to="/register"
-              className="font-semibold text-slate-900 transition hover:text-blue-600"
+              className="font-semibold text-slate-900 transition hover:text-sky-600"
             >
               Register
             </Link>

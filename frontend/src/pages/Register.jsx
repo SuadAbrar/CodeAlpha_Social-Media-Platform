@@ -56,7 +56,7 @@ const Register = () => {
             {/* <div className="mx-auto mb-4 h-14 w-14 rounded-[1.75rem] bg-sky-100 text-sky-600 flex items-center justify-center text-3xl shadow-sm shadow-sky-200/70">
               ♡
             </div> */}
-            <p className="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-blue-600">
+            <p className="mt-5 text-sm font-semibold uppercase tracking-[0.24em] text-sky-600">
               SocialApp
             </p>
             <h1 className="mt-4 text-3xl font-semibold tracking-tight text-slate-900">
@@ -168,7 +168,7 @@ const Register = () => {
             Already have an account?{" "}
             <Link
               to="/login"
-              className="font-semibold text-slate-900 transition hover:text-blue-600"
+              className="font-semibold text-slate-900 transition hover:text-sky-600"
             >
               Sign in
             </Link>
