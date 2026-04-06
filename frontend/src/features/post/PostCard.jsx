@@ -1,6 +1,26 @@
+import { useState } from "react";
+import { toogleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const PostCard = ({ post }) => {
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(
+    post.likesCount || post.likes?.length || 0,
+  );
+
+  const handleLike = async () => {
+    setIsLiked(!isLiked);
+    setLikesCount((prev) => prev + (isLiked ? -1 : 1));
+
+    try {
+      await toogleLikePost(post._id);
+    } catch (error) {
+      console.error("Error toggling like:", error);
+      setIsLiked(isLiked);
+      setLikesCount((prev) => prev + (isLiked ? 1 : -1));
+    }
+  };
+
   return (
     <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-5 transition hover:shadow-md">
       {/* User Info */}
@@ -36,9 +56,14 @@ const PostCard = ({ post }) => {
 
       {/* Actions */}
       <div className="flex items-center gap-6 text-slate-600">
-        <button className="flex items-center gap-2 hover:text-red-500 transition">
-          <FaRegHeart />
-          <span className="text-sm">{post.likes?.length || 0}</span>
+        <button
+          onClick={handleLike}
+          className={`flex items-center gap-2 transition transform active:scale-90 ${
+            isLiked ? "text-red-500" : "text-slate-600"
+          }`}
+        >
+          {isLiked ? <FaHeart /> : <FaRegHeart />}
+          <span className="text-sm">{likesCount}</span>
         </button>
       </div>
     </div>
