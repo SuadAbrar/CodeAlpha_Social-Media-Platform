@@ -1,11 +1,9 @@
-import { BrowserRouter, Routes, Route, Navigate } from "react-router-dom";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Login from "./pages/login";
 import Register from "./pages/Register";
 import Layout from "./components/Layout";
 import ProtectedRoute from "./routes/ProtectedRoute";
-
-// TEMP Home
-const Home = () => <div className="text-xl">Home Feed</div>;
+import Home from "./pages/Home";
 
 function App() {
   return (
