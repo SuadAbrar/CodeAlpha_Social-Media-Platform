@@ -7,7 +7,6 @@ const Home = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [posts, setPosts] = useState([]);
 
-  // ✅ Fetch posts
   useEffect(() => {
     const fetchPosts = async () => {
       const data = await getFeedPosts();
@@ -16,7 +15,6 @@ const Home = () => {
     fetchPosts();
   }, []);
 
-  // ✅ THIS IS THE FIX 🔥
   const handlePostCreated = (newPost) => {
     setPosts((prev) => [newPost, ...prev]);
   };
