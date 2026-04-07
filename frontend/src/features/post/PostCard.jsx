@@ -1,22 +1,26 @@
 import { useState } from "react";
-import { toogleLikePost } from "./postService.js";
+import { toggleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 
 const PostCard = ({ post }) => {
-  const [isLiked, setIsLiked] = useState(false);
+  const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(
     post.likesCount || post.likes?.length || 0,
   );
 
   const handleLike = async () => {
-    setIsLiked(!isLiked);
+    // store previous state (for rollback)
+    const prevLiked = isLiked;
+
+    // 🔥 optimistic update
+    setIsLiked(!prevLiked);
     setLikesCount((prev) => prev + (isLiked ? -1 : 1));
 
     try {
-      await toogleLikePost(post._id);
+      await toggleLikePost(post._id);
     } catch (error) {
       console.error("Error toggling like:", error);
-      setIsLiked(isLiked);
+      setIsLiked(prevLiked); // rollback
       setLikesCount((prev) => prev + (isLiked ? 1 : -1));
     }
   };

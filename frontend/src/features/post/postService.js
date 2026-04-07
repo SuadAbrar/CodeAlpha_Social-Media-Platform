@@ -5,7 +5,7 @@ export const getFeedPosts = async (data) => {
   return response.data.data;
 };
 
-export const toogleLikePost = async (postId) => {
+export const toggleLikePost = async (postId) => {
   const response = await API.post(`/posts/like/${postId}`);
   return response.data.data;
 };
