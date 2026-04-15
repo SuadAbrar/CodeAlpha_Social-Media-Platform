@@ -35,9 +35,18 @@ export const addComment = async (req, res) => {
       parentComment: parentCommentId || null,
     });
 
-    const populatedComment = await comment.populate("user", "username profilePicture");
+    const populatedComment = await comment.populate(
+      "user",
+      "username profilePicture",
+    );
 
-    return sendSuccess(res, populatedComment, "Comment added successfully", null, 201);
+    return sendSuccess(
+      res,
+      populatedComment,
+      "Comment added successfully",
+      null,
+      201,
+    );
   } catch (error) {
     console.error("Error adding comment:", error);
     return sendError(res, 500, "Server error while adding comment");
