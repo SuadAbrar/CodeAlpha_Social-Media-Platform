@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { toggleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
+import CommentSection from "../comment/CommentSection";
 
 const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
@@ -70,6 +71,8 @@ const PostCard = ({ post }) => {
           <span className="text-sm">{likesCount}</span>
         </button>
       </div>
+
+      <CommentSection postId={post._id} />
     </div>
   );
 };

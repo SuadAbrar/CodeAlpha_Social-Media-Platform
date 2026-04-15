@@ -28,16 +28,16 @@ export const addComment = async (req, res) => {
       return sendError(res, 404, "Post not found");
     }
 
-    const comment = Comment.create({
+    const comment = await Comment.create({
       user: req.user._id,
       post: postId,
       text: text.trim(),
       parentComment: parentCommentId || null,
     });
 
-    (await comment).populate("user", "username profilePicture");
+    const populatedComment = await comment.populate("user", "username profilePicture");
 
-    return sendSuccess(res, comment, "Comment added successfully", null, 201);
+    return sendSuccess(res, populatedComment, "Comment added successfully", null, 201);
   } catch (error) {
     console.error("Error adding comment:", error);
     return sendError(res, 500, "Server error while adding comment");
