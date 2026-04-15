@@ -3,7 +3,7 @@ import { toggleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentSection from "../comment/CommentSection";
 
-const PostCard = ({ post }) => {
+export const PostCard = ({ post }) => {
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(
     post.likesCount || post.likes?.length || 0,
