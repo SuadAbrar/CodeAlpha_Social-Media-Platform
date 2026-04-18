@@ -20,6 +20,16 @@ export const toggleFollowUser = async (userId) => {
   return res.data.data;
 };
 
+export const getFollowers = async (userId, page = 1, limit = 50) => {
+  const res = await API.get(`/users/${userId}/followers?page=${page}&limit=${limit}`);
+  return res.data.data;
+};
+
+export const getFollowing = async (userId, page = 1, limit = 50) => {
+  const res = await API.get(`/users/${userId}/following?page=${page}&limit=${limit}`);
+  return res.data.data;
+};
+
 export const getUserPosts = async (userId) => {
   const res = await API.get(`/posts/user/${userId}`);
   return res.data.data;

@@ -5,9 +5,12 @@ import {
   toggleFollowUser,
   getUserPosts,
   getMe,
+  getFollowers,
+  getFollowing,
 } from "../features/user/userService.js";
 import { useAuth } from "../context/AuthContext.jsx";
 import { PostCard } from "../features/post/PostList.jsx";
+import FollowModal from "../features/user/FollowModal.jsx";
 
 const Profile = () => {
   const { id } = useParams();
@@ -16,6 +19,11 @@ const Profile = () => {
   const [user, setUserProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
+  const [followers, setFollowers] = useState([]);
+  const [following, setFollowing] = useState([]);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalType, setModalType] = useState("followers");
+  const [modalLoading, setModalLoading] = useState(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -29,6 +37,34 @@ const Profile = () => {
 
     fetchData();
   }, [id]);
+
+  const openFollowModal = async (type) => {
+    setModalType(type);
+    setIsModalOpen(true);
+    setModalLoading(true);
+
+    try {
+      const users =
+        type === "followers"
+          ? await getFollowers(id)
+          : await getFollowing(id);
+      if (type === "followers") {
+        setFollowers(users);
+      } else {
+        setFollowing(users);
+      }
+    } catch (error) {
+      console.error(`Error loading ${type}:`, error);
+      if (type === "followers") setFollowers([]);
+      else setFollowing([]);
+    } finally {
+      setModalLoading(false);
+    }
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   const handleFollow = async () => {
     setIsFollowing((prev) => !prev);
@@ -79,15 +115,23 @@ const Profile = () => {
               {user.username}
             </h2>
 
-            <div className="flex gap-6 text-sm text-slate-500 mt-2">
-              <span>
+            <div className="flex gap-4 text-sm text-slate-500 mt-2">
+              <button
+                type="button"
+                onClick={() => openFollowModal("followers")}
+                className="rounded-full px-2 py-1 transition hover:bg-slate-100 hover:text-slate-900"
+              >
                 <b className="text-slate-700">{user.followersCount || 0}</b>{" "}
                 Followers
-              </span>
-              <span>
+              </button>
+              <button
+                type="button"
+                onClick={() => openFollowModal("following")}
+                className="rounded-full px-2 py-1 transition hover:bg-slate-100 hover:text-slate-900"
+              >
                 <b className="text-slate-700">{user.followingCount || 0}</b>{" "}
                 Following
-              </span>
+              </button>
             </div>
           </div>
 
@@ -113,6 +157,15 @@ const Profile = () => {
           posts.map((post) => <PostCard key={post._id} post={post} />)
         )}
       </div>
+
+      <FollowModal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title={modalType === "followers" ? "Followers" : "Following"}
+        users={modalType === "followers" ? followers : following}
+        loading={modalLoading}
+        currentUser={currentUser}
+      />
     </div>
   );
 };
