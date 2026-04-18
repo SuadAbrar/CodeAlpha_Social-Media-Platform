@@ -46,7 +46,11 @@ export const getUserProfile = async (req, res) => {
       return sendError(res, 404, "User not found");
     }
 
-    const isFollowing = req.user?.following?.includes(user._id) || false;
+    const isFollowing = Boolean(
+      req.user?.following?.some(
+        (followedId) => followedId.toString() === user._id.toString(),
+      ),
+    );
     return sendSuccess(res, {
       id: user._id,
       username: user.username,
@@ -127,7 +131,9 @@ export const toggleFollowUser = async (req, res) => {
       return sendError(res, 404, "User not found");
     }
 
-    const isFollowing = currentUser.following.includes(targetUserId);
+    const isFollowing = currentUser.following.some(
+      (followedId) => followedId.toString() === targetUserId.toString(),
+    );
 
     if (isFollowing) {
       await Promise.all([
@@ -149,7 +155,6 @@ export const toggleFollowUser = async (req, res) => {
         $addToSet: { followers: currentUserId },
       }),
     ]);
-
     return sendSuccess(res, null, "Followed user");
   } catch (error) {
     console.error("Error toggling follow status:", error);

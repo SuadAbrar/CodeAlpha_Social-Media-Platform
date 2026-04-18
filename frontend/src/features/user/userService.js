@@ -1,5 +1,10 @@
 import API from "../../services/api.js";
 
+export const getMe = async () => {
+  const res = await API.get("/users/me");
+  return res.data.data;
+};
+
 export const getUserProfile = async (userId) => {
   const res = await API.get(`/users/${userId}`);
   return res.data.data;

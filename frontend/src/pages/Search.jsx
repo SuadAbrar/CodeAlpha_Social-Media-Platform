@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
-import { FaSearch, FaUserPlus } from "react-icons/fa";
+import { FaSearch } from "react-icons/fa";
 import { searchUsers } from "../features/user/userService.js";
 import { getExplorePosts } from "../features/post/postService.js";
 import { PostCard } from "../features/post/PostList.jsx";
@@ -25,6 +25,30 @@ const Search = () => {
     fetchExplorePosts();
   }, []);
 
+  // Debounced search effect
+  useEffect(() => {
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      setActiveTab("explore");
+      return;
+    }
+
+    const delayDebounceFn = setTimeout(async () => {
+      setLoading(true);
+      try {
+        const users = await searchUsers(searchQuery.trim());
+        setSearchResults(users);
+        setActiveTab("search");
+      } catch (error) {
+        console.error("Error searching users:", error);
+      } finally {
+        setLoading(false);
+      }
+    }, 1000); // 1 second delay
+
+    return () => clearTimeout(delayDebounceFn);
+  }, [searchQuery]);
+
   const handleSearch = async (e) => {
     e.preventDefault();
     if (!searchQuery.trim()) return;
@@ -45,7 +69,7 @@ const Search = () => {
     <div className="max-w-2xl mx-auto">
       {/* Search Form */}
       <div className="mb-6">
-        <form onSubmit={handleSearch} className="relative">
+        <div className="relative">
           <input
             type="text"
             placeholder="Search users..."
@@ -54,14 +78,12 @@ const Search = () => {
             className="w-full pl-12 pr-4 py-3 rounded-3xl border border-slate-200 bg-slate-50 focus:outline-none focus:ring-4 focus:ring-sky-100 focus:border-sky-300 transition"
           />
           <FaSearch className="absolute left-4 top-1/2 transform -translate-y-1/2 text-slate-400 h-4 w-4" />
-          <button
-            type="submit"
-            disabled={loading}
-            className="absolute right-2 top-1/2 transform -translate-y-1/2 px-4 py-1 bg-sky-600 text-white rounded-xl hover:bg-sky-700 disabled:bg-slate-400 transition"
-          >
-            {loading ? "..." : "Search"}
-          </button>
-        </form>
+          {loading && (
+            <div className="absolute right-4 top-1/2 transform -translate-y-1/2">
+              <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-sky-600"></div>
+            </div>
+          )}
+        </div>
       </div>
 
       {/* Tabs */}
@@ -150,7 +172,6 @@ const Search = () => {
                     to={`/profile/${user._id}`}
                     className="px-4 py-2 bg-sky-600 text-white rounded-xl hover:bg-sky-700 transition flex items-center gap-2"
                   >
-                    <FaUserPlus className="h-3 w-3" />
                     View Profile
                   </Link>
                 </div>

@@ -4,13 +4,16 @@ import {
   getUserProfile,
   toggleFollowUser,
   getUserPosts,
+  getMe,
 } from "../features/user/userService.js";
+import { useAuth } from "../context/AuthContext.jsx";
 import { PostCard } from "../features/post/PostList.jsx";
 
 const Profile = () => {
   const { id } = useParams();
+  const { user: currentUser, setUser: setCurrentUser } = useAuth();
 
-  const [user, setUser] = useState(null);
+  const [user, setUserProfile] = useState(null);
   const [posts, setPosts] = useState([]);
   const [isFollowing, setIsFollowing] = useState(false);
 
@@ -19,9 +22,9 @@ const Profile = () => {
       const userData = await getUserProfile(id);
       const postsData = await getUserPosts(id);
 
-      setUser(userData);
+      setUserProfile(userData);
       setPosts(postsData);
-      setIsFollowing(userData.isFollowing);
+      setIsFollowing(Boolean(userData.isFollowing));
     };
 
     fetchData();
@@ -32,6 +35,14 @@ const Profile = () => {
 
     try {
       await toggleFollowUser(id);
+      // Refresh both the viewed user's data and current user's data
+      const [updatedUserData, updatedCurrentUserData] = await Promise.all([
+        getUserProfile(id),
+        getMe(),
+      ]);
+      setUserProfile(updatedUserData);
+      setIsFollowing(updatedUserData.isFollowing);
+      setCurrentUser(updatedCurrentUserData); // Update current user data in context
     } catch (error) {
       console.error(error);
       setIsFollowing((prev) => !prev); // rollback
@@ -70,11 +81,11 @@ const Profile = () => {
 
             <div className="flex gap-6 text-sm text-slate-500 mt-2">
               <span>
-                <b className="text-slate-700">{user.followers?.length || 0}</b>{" "}
+                <b className="text-slate-700">{user.followersCount || 0}</b>{" "}
                 Followers
               </span>
               <span>
-                <b className="text-slate-700">{user.following?.length || 0}</b>{" "}
+                <b className="text-slate-700">{user.followingCount || 0}</b>{" "}
                 Following
               </span>
             </div>

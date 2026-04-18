@@ -2,14 +2,20 @@ import { useState } from "react";
 import { toggleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentSection from "../comment/CommentSection";
+import { useAuth } from "../../context/AuthContext";
 
 export const PostCard = ({ post }) => {
+  const { user } = useAuth();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(
     post.likesCount || post.likes?.length || 0,
   );
 
+  const isOwnPost = user && post.user?._id === user._id;
+
   const handleLike = async () => {
+    if (isOwnPost) return; // Prevent liking own post
+
     // store previous state (for rollback)
     const prevLiked = isLiked;
 
@@ -63,9 +69,10 @@ export const PostCard = ({ post }) => {
       <div className="flex items-center gap-6 text-slate-600">
         <button
           onClick={handleLike}
+          disabled={isOwnPost}
           className={`flex items-center gap-2 transition transform active:scale-90 ${
             isLiked ? "text-red-500" : "text-slate-600"
-          }`}
+          } ${isOwnPost ? "cursor-not-allowed opacity-50" : "hover:text-red-500"}`}
         >
           {isLiked ? <FaHeart /> : <FaRegHeart />}
           <span className="text-sm">{likesCount}</span>

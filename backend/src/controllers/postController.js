@@ -219,6 +219,12 @@ export const toggleLikePost = async (req, res) => {
     if (!post) {
       return sendError(res, 404, "Post not found");
     }
+
+    // Prevent user from liking their own post
+    if (post.user.toString() === userId.toString()) {
+      return sendError(res, 400, "You cannot like your own post");
+    }
+
     const isLiked = post.likes.includes(userId);
 
     if (isLiked) {
