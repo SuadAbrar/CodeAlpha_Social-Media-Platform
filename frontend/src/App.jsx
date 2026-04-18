@@ -1,4 +1,5 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, useLocation } from "react-router-dom";
+import { AnimatePresence } from "framer-motion";
 import Login from "./pages/Login";
 import Register from "./pages/Register";
 import Layout from "./components/Layout";
@@ -6,19 +7,49 @@ import ProtectedRoute from "./routes/ProtectedRoute";
 import Home from "./pages/Home";
 import Profile from "./pages/Profile";
 import Search from "./pages/Search";
+import { ToastProvider } from "./context/ToastContext";
+import { PageTransition } from "./components/UI";
 
 function App() {
   return (
-    <BrowserRouter>
-      <Routes>
-        <Route path="/login" element={<Login />} />
-        <Route path="/register" element={<Register />} />
+    <ToastProvider>
+      <BrowserRouter>
+        <AppRoutes />
+      </BrowserRouter>
+    </ToastProvider>
+  );
+}
+
+function AppRoutes() {
+  const location = useLocation();
+
+  return (
+    <AnimatePresence mode="wait">
+      <Routes location={location} key={location.pathname}>
+        <Route
+          path="/login"
+          element={
+            <PageTransition>
+              <Login />
+            </PageTransition>
+          }
+        />
+        <Route
+          path="/register"
+          element={
+            <PageTransition>
+              <Register />
+            </PageTransition>
+          }
+        />
         <Route
           path="/"
           element={
             <ProtectedRoute>
               <Layout>
-                <Home />
+                <PageTransition>
+                  <Home />
+                </PageTransition>
               </Layout>
             </ProtectedRoute>
           }
@@ -28,7 +59,9 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <Search />
+                <PageTransition>
+                  <Search />
+                </PageTransition>
               </Layout>
             </ProtectedRoute>
           }
@@ -38,13 +71,15 @@ function App() {
           element={
             <ProtectedRoute>
               <Layout>
-                <Profile />
+                <PageTransition>
+                  <Profile />
+                </PageTransition>
               </Layout>
             </ProtectedRoute>
           }
         />
       </Routes>
-    </BrowserRouter>
+    </AnimatePresence>
   );
 }
 

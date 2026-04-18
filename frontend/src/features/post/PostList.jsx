@@ -1,22 +1,27 @@
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { toggleLikePost } from "./postService.js";
 import { FaHeart, FaRegHeart } from "react-icons/fa";
 import CommentSection from "../comment/CommentSection";
 import { useAuth } from "../../context/AuthContext";
+import { ScaleButton } from "../../components/UI";
+import { useToast } from "../../context/ToastContext";
 
-export const PostCard = ({ post }) => {
+export const PostCard = ({ post, index = 0 }) => {
   const { user } = useAuth();
+  const { addToast } = useToast();
   const [isLiked, setIsLiked] = useState(post.isLiked || false);
   const [likesCount, setLikesCount] = useState(
     post.likesCount || post.likes?.length || 0,
   );
+  const [isLiking, setIsLiking] = useState(false);
 
   const isOwnPost = user && post.user?._id === user._id;
 
   const handleLike = async () => {
-    if (isOwnPost) return; // Prevent liking own post
+    if (isOwnPost || isLiking) return;
 
-    // store previous state (for rollback)
+    setIsLiking(true);
     const prevLiked = isLiked;
 
     // optimistic update
@@ -27,16 +32,24 @@ export const PostCard = ({ post }) => {
       await toggleLikePost(post._id);
     } catch (error) {
       console.error("Error toggling like:", error);
-      setIsLiked(prevLiked); // rollback
+      addToast("Failed to like post", "error");
+      setIsLiked(prevLiked);
       setLikesCount((prev) => prev + (isLiked ? 1 : -1));
+    } finally {
+      setIsLiking(false);
     }
   };
 
   return (
-    <div className="bg-white border border-slate-200 rounded-3xl shadow-sm p-5 transition hover:shadow-md">
+    <motion.div
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.3, delay: index * 0.1 }}
+      className="bg-white border border-slate-200 rounded-3xl shadow-sm p-5 transition hover:shadow-md"
+    >
       {/* User Info */}
       <div className="flex items-center gap-3 mb-4">
-        <div className="h-10 w-10 rounded-full bg-slate-200 flex items-center justify-center text-sm font-semibold text-slate-600">
+        <div className="h-10 w-10 rounded-full bg-linear-to-br from-sky-400 to-slate-600 flex items-center justify-center text-sm font-semibold text-white shadow-lg">
           {post.user?.username?.charAt(0).toUpperCase()}
         </div>
         <div>
@@ -51,7 +64,10 @@ export const PostCard = ({ post }) => {
 
       {/* Image */}
       {post.image && (
-        <img
+        <motion.img
+          initial={{ opacity: 0, scale: 0.95 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.3, delay: 0.2 }}
           src={post.image}
           alt="post"
           className="rounded-2xl mb-4 w-full object-cover max-h-100"
@@ -60,27 +76,42 @@ export const PostCard = ({ post }) => {
 
       {/* Content */}
       {post.content && (
-        <p className="text-sm text-slate-800 mb-4 leading-relaxed">
+        <motion.p
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 0.3, delay: 0.1 }}
+          className="text-sm text-slate-800 mb-4 leading-relaxed"
+        >
           {post.content}
-        </p>
+        </motion.p>
       )}
 
       {/* Actions */}
-      <div className="flex items-center gap-6 text-slate-600">
-        <button
+      <motion.div
+        initial={{ opacity: 0, y: 10 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.3, delay: 0.3 }}
+        className="flex items-center gap-6 text-slate-600 mb-4"
+      >
+        <ScaleButton
           onClick={handleLike}
-          disabled={isOwnPost}
-          className={`flex items-center gap-2 transition transform active:scale-90 ${
+          disabled={isOwnPost || isLiking}
+          className={`flex items-center gap-2 transition ${
             isLiked ? "text-red-500" : "text-slate-600"
           } ${isOwnPost ? "cursor-not-allowed opacity-50" : "hover:text-red-500"}`}
         >
-          {isLiked ? <FaHeart /> : <FaRegHeart />}
+          <motion.div
+            animate={{ scale: isLiked ? [1, 1.2, 1] : 1 }}
+            transition={{ duration: 0.2 }}
+          >
+            {isLiked ? <FaHeart /> : <FaRegHeart />}
+          </motion.div>
           <span className="text-sm">{likesCount}</span>
-        </button>
-      </div>
+        </ScaleButton>
+      </motion.div>
 
       <CommentSection postId={post._id} />
-    </div>
+    </motion.div>
   );
 };
 
@@ -94,8 +125,8 @@ const PostList = ({ posts }) => {
   }
   return (
     <div className="space-y-6">
-      {posts.map((post) => (
-        <PostCard key={post._id} post={post} />
+      {posts.map((post, index) => (
+        <PostCard key={post._id} post={post} index={index} />
       ))}
     </div>
   );
