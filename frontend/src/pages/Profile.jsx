@@ -45,9 +45,7 @@ const Profile = () => {
 
     try {
       const users =
-        type === "followers"
-          ? await getFollowers(id)
-          : await getFollowing(id);
+        type === "followers" ? await getFollowers(id) : await getFollowing(id);
       if (type === "followers") {
         setFollowers(users);
       } else {

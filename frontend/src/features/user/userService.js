@@ -21,12 +21,16 @@ export const toggleFollowUser = async (userId) => {
 };
 
 export const getFollowers = async (userId, page = 1, limit = 50) => {
-  const res = await API.get(`/users/${userId}/followers?page=${page}&limit=${limit}`);
+  const res = await API.get(
+    `/users/${userId}/followers?page=${page}&limit=${limit}`,
+  );
   return res.data.data;
 };
 
 export const getFollowing = async (userId, page = 1, limit = 50) => {
-  const res = await API.get(`/users/${userId}/following?page=${page}&limit=${limit}`);
+  const res = await API.get(
+    `/users/${userId}/following?page=${page}&limit=${limit}`,
+  );
   return res.data.data;
 };
 
