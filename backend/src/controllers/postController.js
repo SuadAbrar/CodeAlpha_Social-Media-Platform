@@ -242,6 +242,44 @@ export const toggleLikePost = async (req, res) => {
   }
 };
 
+// @desc    Get explore posts (all users)
+// @route   GET /api/posts/explore
+// @access  Public
+export const getExplorePosts = async (req, res) => {
+  try {
+    const { page, limit } = parsePagination(req);
+    const skip = (page - 1) * limit;
+
+    const [total, posts] = await Promise.all([
+      Post.countDocuments(),
+      Post.find()
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(limit)
+        .populate("user", "username profilePicture"),
+    ]);
+
+    const postsWithLikeStatus = posts.map((post) => {
+      const isLiked = req.user ? post.likes.includes(req.user._id) : false;
+      return {
+        ...post.toObject(),
+        likesCount: post.likes.length,
+        isLiked,
+      };
+    });
+
+    return sendSuccess(res, postsWithLikeStatus, "Explore posts retrieved", {
+      page,
+      limit,
+      total,
+      pages: Math.ceil(total / limit),
+    });
+  } catch (error) {
+    console.error("Error fetching explore posts:", error);
+    return sendError(res, 500, "Server error while fetching explore posts");
+  }
+};
+
 // @desc    Delete a post
 // @route   DELETE /api/posts/:postId
 // @access  Private

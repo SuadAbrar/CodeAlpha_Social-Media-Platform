@@ -7,6 +7,7 @@ import {
   getUserPosts,
   toggleLikePost,
   deletePost,
+  getExplorePosts,
 } from "../controllers/postController.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 
@@ -14,6 +15,7 @@ const router = express.Router();
 
 router.post("/", authMiddleware, createPost);
 router.get("/feed", authMiddleware, getFeedPosts);
+router.get("/explore", getExplorePosts);
 router.get("/:postId", getPostById);
 router.put("/:postId", authMiddleware, updatePost);
 router.get("/user/:userId", getUserPosts);
